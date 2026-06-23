@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LUMI — Wear Your Light</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blush: #FFF8F5;
+    --coral: #FF6B6B;
+    --coral-light: #FFE4E4;
+    --lilac: #C084FC;
+    --lilac-light: #F3E8FF;
+    --mint: #6EE7B7;
+    --mint-light: #ECFDF5;
+    --ink: #1A1A2E;
+    --ink-mid: #4A4A6A;
+    --ink-soft: #9090B0;
+    --white: #FFFFFF;
+    --card-bg: #FFFCFB;
+    --border: #F0E8E4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blush);
+    color: var(--ink);
+    overflow-x: hidden;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── ANNOUNCEMENT BAR ── */
+  .announcement {
+    background: var(--ink);
+    color: var(--white);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 9px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .announcement::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(192,132,252,0.15), transparent);
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
+  .announcement span { color: var(--coral); font-weight: 700; }
+  .announcement a { color: var(--mint); text-decoration: none; margin-left: 8px; font-weight: 600; }
+
+  /* ── HEADER ── */
+  header {
+    background: rgba(255,248,245,0.95);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 68px;
+    gap: 24px;
+  }
+
+  /* LOGO */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .logo-mark {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--coral) 0%, var(--lilac) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .logo-text span { color: var(--coral); }
+
+  /* NAV */
+  nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+  .nav-item { position: relative; }
+  .nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: var(--ink); background: var(--coral-light); }
+  .nav-link.sale { color: var(--coral); }
+  .nav-link.sale:hover { background: var(--coral); color: white; }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px;
+    min-width: 180px;
+    box-shadow: 0 8px 40px rgba(26,26,46,0.12);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    z-index: 200;
+  }
+  .nav-item:hover .dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .dropdown a {
+    display: block;
+    padding: 8px 12px;
+    color: var(--ink-mid);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+  .dropdown a:hover { background: var(--blush); color: var(--coral); }
+
+  /* HEADER ACTIONS */
+  .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border: none; background: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    color: var(--ink-mid);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--coral-light); color: var(--coral); }
+  .cart-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 16px; height: 16px;
+    background: var(--coral);
+    color: white;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-primary {
+    background: var(--coral);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary:hover { background: #e85555; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,107,0.35); }
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-outline:hover { background: var(--ink); color: white; transform: translateY(-1px); }
+  .btn-white {
+    background: white;
+    color: var(--ink);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-white:hover { background: var(--blush); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: calc(100vh - 97px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-left {
+    background: linear-gradient(135deg, #FFF8F5 0%, #FFE4E4 60%, #F3E8FF 100%);
+    padding: 80px 60px 80px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1.5px solid var(--coral-light);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--coral);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(44px, 5.5vw, 72px);
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--coral);
+  }
+  .hero-title .outline-text {
+    -webkit-text-stroke: 2px var(--lilac);
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--ink-mid);
+    max-width: 400px;
+    margin-bottom: 36px;
+    line-height: 1.7;
+    font-weight: 400;
+  }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+  .hero-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .pill:hover { border-color: var(--coral); color: var(--coral); transform: translateY(-2px); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-right img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 6s ease;
+  }
+  .hero-right:hover img { transform: scale(1.04); }
+  .hero-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(255,248,245,0.3) 0%, transparent 30%);
+    pointer-events: none;
+  }
+  .hero-float-card {
+    position: absolute;
+    background: white;
+    border-radius: 16px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 32px rgba(26,26,46,0.12);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-float-card.card-1 { bottom: 32px; left: 24px; }
+  .hero-float-card.card-2 { top: 48px; right: 24px; }
+  .fc-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .fc-text { font-size: 12px; }
+  .fc-text strong { display: block; font-size: 14px; color: var(--ink); }
+  .fc-text span { color: var(--ink-soft); font-size: 11px; }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    background: var(--ink);
+    padding: 20px 32px;
+  }
+  .trust-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .trust-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .trust-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.1); }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 80px 32px; }
+  .section-inner { max-width: 1280px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 52px; }
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .section-title em { font-style: italic; color: var(--lilac); }
+  .section-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── CATEGORIES ── */
+  .categories { background: var(--white); }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .cat-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    group: true;
+    text-decoration: none;
+  }
+  .cat-card:nth-child(1) { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; min-height: 480px; }
+  .cat-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .cat-card:hover img { transform: scale(1.06); }
+  .cat-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,26,46,0.75) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+  .cat-card:hover .cat-overlay { background: linear-gradient(to top, rgba(26,26,46,0.82) 0%, rgba(255,107,107,0.12) 100%); }
+  .cat-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+  }
+  .cat-count { font-size: 12px; color: rgba(255,255,255,0.65); font-weight: 500; }
+  .cat-arrow {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 36px; height: 36px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.3s;
+    color: var(--ink);
+  }
+  .cat-card:hover .cat-arrow { opacity: 1; transform: translateY(0); }
+
+  /* ── FEATURE BANNER ── */
+  .feature-banner {
+    background: linear-gradient(135deg, var(--lilac-light) 0%, var(--coral-light) 100%);
+    padding: 0;
+  }
+  .fb-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+    overflow: hidden;
+  }
+  .fb-content {
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .fb-tag {
+    display: inline-block;
+    background: var(--lilac);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .fb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .fb-title em { font-style: italic; color: var(--lilac); }
+  .fb-body { color: var(--ink-mid); margin-bottom: 32px; line-height: 1.75; }
+  .fb-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .fb-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+  /* ── PRODUCTS ── */
+  .products { background: var(--blush); }
+  .products-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    padding: 9px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: white;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border: 1px solid var(--border);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(26,26,46,0.1);
+    border-color: transparent;
+  }
+  .product-img {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    position: relative;
+    background: var(--blush);
+  }
+  .product-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .product-img img { transform: scale(1.06); }
+  .product-badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: var(--coral);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    z-index: 2;
+  }
+  .product-badge.sale { background: var(--ink); }
+  .product-badge.trending { background: var(--lilac); }
+  .product-wishlist {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 34px; height: 34px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: none; cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    transition: all 0.2s;
+    z-index: 2;
+    color: var(--ink-soft);
+  }
+  .product-wishlist:hover, .product-wishlist.active { color: var(--coral); transform: scale(1.15); }
+  .product-quick {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .product-card:hover .product-quick { opacity: 1; transform: translateY(0); }
+  .product-info { padding: 16px; }
+  .product-brand { font-size: 10px; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .product-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+  .product-colors { display: flex; gap: 6px; margin-bottom: 10px; }
+  .color-swatch {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1.5px var(--border);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .color-swatch:hover { transform: scale(1.3); }
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .price-now { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .price-was { font-size: 13px; color: var(--ink-soft); text-decoration: line-through; }
+  .products-cta { text-align: center; margin-top: 48px; }
+
+  /* ── EDITORIAL / LIFESTYLE STRIP ── */
+  .lifestyle { background: white; padding: 80px 32px; }
+  .ls-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 0;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .ls-main {
+    position: relative;
+    background: var(--ink);
+    min-height: 480px;
+  }
+  .ls-main img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+  .ls-main-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    background: linear-gradient(to top, rgba(26,26,46,0.85) 0%, transparent 50%);
+  }
+  .ls-main-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .ls-main-content p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 20px; }
+  .ls-side { display: flex; flex-direction: column; }
+  .ls-item {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .ls-item:last-child { border-bottom: none; }
+  .ls-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  .ls-item:hover img { transform: scale(1.06); }
+  .ls-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,26,46,0.6) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .ls-item-overlay h4 { color: white; font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 4px; }
+  .ls-item-overlay span { color: rgba(255,255,255,0.65); font-size: 12px; }
+
+  /* ── ABOUT SECTION ── */
+  .about { background: var(--ink); color: white; }
+  .about-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-imgs {
+    position: relative;
+    height: 520px;
+  }
+  .about-img-main {
+    position: absolute;
+    width: 75%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    left: 0; top: 0;
+  }
+  .about-img-main img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .about-img-accent {
+    position: absolute;
+    width: 50%;
+    height: 55%;
+    border-radius: 20px;
+    overflow: hidden;
+    right: 0; bottom: 0;
+    border: 4px solid var(--ink);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .about-img-accent img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .about-stat {
+    position: absolute;
+    top: 40px; right: 0;
+    background: var(--coral);
+    padding: 20px 24px;
+    border-radius: 16px;
+    text-align: center;
+    color: white;
+  }
+  .about-stat-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; display: block; }
+  .about-stat-label { font-size: 11px; opacity: 0.85; }
+  .about-content .section-eyebrow { color: var(--coral); }
+  .about-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: white;
+  }
+  .about-content h2 em { font-style: italic; color: var(--lilac); }
+  .about-content p { color: rgba(255,255,255,0.7); line-height: 1.75; margin-bottom: 16px; }
+  .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0; }
+  .about-feat {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255,255,255,0.05);
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .af-icon { font-size: 22px; }
+  .af-text strong { display: block; font-size: 13px; font-weight: 700; color: white; margin-bottom: 2px; }
+  .af-text span { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+  /* ── INSTAGRAM STRIP ── */
+  .instagram { background: var(--blush); }
+  .insta-inner { max-width: 1280px; margin: 0 auto; }
+  .insta-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .insta-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .insta-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #f9a825, #e91e63, #9c27b0);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+  .insta-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+  .insta-item {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .insta-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .insta-item:hover img { transform: scale(1.08); }
+  .insta-hover {
+    position: absolute; inset: 0;
+    background: rgba(26,26,46,0.5);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: white;
+    font-size: 22px;
+  }
+  .insta-item:hover .insta-hover { opacity: 1; }
+
+  /* ── REVIEWS ── */
+  .reviews { background: white; }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .review-card {
+    background: var(--blush);
+    border-radius: 20px;
+    padding: 28px;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .review-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,26,46,0.08); border-color: var(--coral-light); }
+  .review-stars { color: #FFB800; font-size: 16px; margin-bottom: 12px; letter-spacing: 2px; }
+  .review-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .review-author { display: flex; align-items: center; gap: 12px; }
+  .review-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--lilac-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .review-name { font-weight: 700; font-size: 14px; color: var(--ink); display: block; }
+  .review-loc { font-size: 12px; color: var(--ink-soft); }
+  .review-quote {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-size: 48px;
+    font-family: 'Playfair Display', serif;
+    color: var(--coral-light);
+    line-height: 1;
+  }
+
+  /* ── LOCATIONS ── */
+  .locations { background: var(--blush); }
+  .loc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .loc-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .loc-img { aspect-ratio: 16/7; overflow: hidden; }
+  .loc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  .loc-card:hover .loc-img img { transform: scale(1.04); }
+  .loc-info { padding: 28px 32px; }
+  .loc-info h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .loc-info p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 20px; }
+  .loc-hours { margin-bottom: 20px; }
+  .loc-hours dt { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 4px; }
+  .loc-hours dd { font-size: 14px; color: var(--ink-mid); }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    background: linear-gradient(135deg, var(--coral) 0%, var(--lilac) 100%);
+    padding: 80px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .newsletter::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 400px; height: 400px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .nl-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .nl-inner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+  }
+  .nl-inner p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 32px; }
+  .nl-form { display: flex; gap: 8px; max-width: 460px; margin: 0 auto 16px; }
+  .nl-input {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 100px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .nl-input::placeholder { color: rgba(255,255,255,0.65); }
+  .nl-input:focus { border-color: white; }
+  .nl-note { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--ink); color: white; }
+  .footer-top {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 64px 32px 48px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+  .footer-brand .logo { margin-bottom: 16px; }
+  .footer-brand .logo-text { color: white; }
+  .footer-brand p { color: rgba(255,255,255,0.55); font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { background: var(--coral); border-color: var(--coral); color: white; }
+  .footer-col h4 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--coral); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 24px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-bottom p { color: rgba(255,255,255,0.35); font-size: 13px; }
+  .payment-icons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pay-badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FLOATING CART ── */
+  .floating-cart {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 500;
+  }
+  .fc-btn {
+    width: 56px; height: 56px;
+    background: var(--coral);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 22px;
+    box-shadow: 0 8px 30px rgba(255,107,107,0.4);
+    transition: all 0.25s;
+  }
+  .fc-btn:hover { transform: scale(1.1) rotate(-8deg); background: #e85555; }
+
+  /* ── MODAL / POPUP ── */
+  .popup-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,46,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .popup-overlay.show { opacity: 1; pointer-events: auto; }
+  .popup {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    max-width: 680px;
+    width: calc(100% - 48px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-height: 90vh;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+  }
+  .popup-overlay.show .popup { transform: scale(1); }
+  .popup-img { overflow: hidden; }
+  .popup-img img { width: 100%; height: 100%; object-fit: cover; }
+  .popup-content { padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; }
+  .popup-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--coral); margin-bottom: 12px; }
+  .popup-content h3 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .popup-content p { font-size: 14px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.7; }
+  .popup-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .popup-input:focus { border-color: var(--coral); }
+  .popup-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: var(--ink-mid);
+    transition: all 0.2s;
+  }
+  .popup-close:hover { background: var(--coral-light); color: var(--coral); }
+  .popup-skip { background: none; border: none; cursor: pointer; font-size: 12px; color: var(--ink-soft); text-decoration: underline; margin-top: 12px; font-family: inherit; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .insta-grid { grid-template-columns: repeat(4, 1fr); }
+    .insta-grid .insta-item:nth-child(n+5) { display: none; }
+  }
+  @media (max-width: 860px) {
+    nav { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { height: 60vw; }
+    .hero-left { padding: 48px 24px; }
+    .cat-grid { grid-template-columns: 1fr 1fr; }
+    .cat-card:nth-child(1) { grid-column: span 2; grid-row: span 1; min-height: 280px; }
+    .fb-inner { grid-template-columns: 1fr; }
+    .fb-img { height: 280px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-inner { grid-template-columns: 1fr; }
+    .about-imgs { height: 320px; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .loc-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; }
+    .ls-grid { grid-template-columns: 1fr; }
+    .ls-side { flex-direction: row; }
+    .ls-item { min-height: 200px; border-left: none; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .insta-grid { grid-template-columns: repeat(3, 1fr); }
+    .popup { grid-template-columns: 1fr; }
+    .popup-img { display: none; }
+    .nl-form { flex-direction: column; }
+    section { padding: 56px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT -->
+<div class="announcement">
+  Free Express Shipping on Orders Over $150 &nbsp;|&nbsp; New Drops Every Friday
+  <span>→</span> <a href="#">Shop New Arrivals</a>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 9l10 13L22 9z" fill="rgba(255,255,255,0.95)"/>
+          <path d="M2 9h20" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="logo-text">LU<span>MI</span></div>
+    </a>
+    <nav>
+      <div class="nav-item">
+        <a href="#" class="nav-link">Shop ▾</a>
+        <div class="dropdown">
+          <a href="#">Tops &amp; Tees</a>
+          <a href="#">Dresses</a>
+          <a href="#">Bottoms</a>
+          <a href="#">Co-ords &amp; Sets</a>
+          <a href="#">Jackets</a>
+          <a href="#">Jewellery</a>
+          <a href="#">Bags</a>
+          <a href="#">Shoes</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link">Collections ▾</a>
+        <div class="dropdown">
+          <a href="#">New Arrivals</a>
+          <a href="#">Summer Edit</a>
+          <a href="#">Festival Looks</a>
+          <a href="#">Going Out</a>
+          <a href="#">Most Loved</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#" class="nav-link">Edits ▾</a>
+        <div class="dropdown">
+          <a href="#">Everyday Chic</a>
+          <a href="#">Event Ready</a>
+          <a href="#">Travel Looks</a>
+          <a href="#">Y2K Revival</a>
+        </div>
+      </div>
+      <a href="#" class="nav-link sale">Sale</a>
+      <div class="nav-item">
+        <a href="#" class="nav-link">About ▾</a>
+        <div class="dropdown">
+          <a href="#">Our Story</a>
+          <a href="#">Our Boutiques</a>
+          <a href="#">Style Journal</a>
+        </div>
+      </div>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="document.querySelector('.search-bar').style.display='flex'">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-btn">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      <button class="icon-btn">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="icon-btn" style="position:relative">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge">3</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- SEARCH BAR -->
+<div class="search-bar" style="display:none;position:fixed;inset:0;background:rgba(26,26,46,0.5);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(8px)" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:white;border-radius:20px;padding:24px;width:min(600px,90%);display:flex;gap:12px;align-items:center">
+    <svg width="20" height="20" fill="none" stroke="#9090B0" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input placeholder="Search for dresses, tops, sets..." style="flex:1;border:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink)" autofocus/>
+    <button onclick="document.querySelector('.search-bar').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--ink-soft);font-size:22px">✕</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <div class="hero-left">
+    <div class="hero-eyebrow">New Collection 2025</div>
+    <h1 class="hero-title">
+      Dress Like<br>
+      You're <em>Already</em><br>
+      <span class="outline-text">Famous.</span>
+    </h1>
+    <p class="hero-sub">Playful, feminine, unapologetically you. Discover pieces designed for the girl who never has "nothing to wear."</p>
+    <div class="hero-ctas">
+      <a href="#shop" class="btn-primary">Shop New Arrivals →</a>
+      <a href="#about" class="btn-outline">Our Story</a>
+    </div>
+    <div class="hero-pills">
+      <a href="#" class="pill">Dresses</a>
+      <a href="#" class="pill">New In</a>
+      <a href="#" class="pill">Co-ords</a>
+      <a href="#" class="pill">Sale</a>
+      <a href="#" class="pill">Festival</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.pexels.com/photos/3622608/pexels-photo-3622608.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Young woman in stylish outfit"/>
+    <div class="hero-img-overlay"></div>
+    <div class="hero-float-card card-1">
+      <div class="fc-icon" style="background:var(--mint-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <div class="fc-text">
+        <strong>12k+ Happy Shoppers</strong>
+        <span>Loved by girls across Australia</span>
+      </div>
+    </div>
+    <div class="hero-float-card card-2">
+      <div class="fc-icon" style="background:var(--coral-light)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF6B6B" stroke="#FF6B6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="fc-text">
+        <strong>4.9 Rating</strong>
+        <span>Over 3,200 reviews</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      Free Express Shipping Over $150
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+      </div>
+      Easy 30-Day Returns
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      New Styles Weekly
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      Afterpay &amp; Zip Pay Available
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      Sustainable Fabrics
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories" id="shop">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">Shop by Category</p>
+      <h2 class="section-title">Find Your <em>Vibe</em></h2>
+      <p class="section-sub">From effortless day looks to going-out glam — we've got every occasion covered.</p>
+    </div>
+    <div class="cat-grid">
+      <a href="#" class="cat-card">
+        <img src="https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Dresses"/>
+        <div class="cat-overlay">
+          <span class="cat-name">Dresses</span>
+          <span class="cat-count">120+ styles</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </a>
+      <a href="#" class="cat-card">
+        <img src="https://images.pexels.com/photos/2220329/pexels-photo-2220329.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Tops"/>
+        <div class="cat-overlay">
+          <span class="cat-name">Tops &amp; Tees</span>
+          <span class="cat-count">85+ styles</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </a>
+      <a href="#" class="cat-card">
+        <img src="https://images.pexels.com/photos/5935243/pexels-photo-5935243.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Co-ords &amp; Sets"/>
+        <div class="cat-overlay">
+          <span class="cat-name">Co-ords &amp; Sets</span>
+          <span class="cat-count">40+ styles</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </a>
+      <a href="#" class="cat-card">
+        <img src="https://images.pexels.com/photos/2036646/pexels-photo-2036646.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Jackets"/>
+        <div class="cat-overlay">
+          <span class="cat-name">Jackets</span>
+          <span class="cat-count">35+ styles</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </a>
+      <a href="#" class="cat-card">
+        <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Accessories"/>
+        <div class="cat-overlay">
+          <span class="cat-name">Jewellery &amp; Bags</span>
+          <span class="cat-count">60+ pieces</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE BANNER -->
+<div class="feature-banner">
+  <div class="fb-inner">
+    <div class="fb-content">
+      <span class="fb-tag">Featured Collection</span>
+      <h2 class="fb-title">Summer in the <em>City</em> Edit</h2>
+      <p class="fb-body">Breezy linen, playful prints, and sundress energy — our summer edit is packed with pieces you'll wear on repeat. Designed for long lunches, golden afternoons, and nights that go on forever.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="#" class="btn-primary">Shop the Edit →</a>
+        <a href="#" class="btn-outline">See Lookbook</a>
+      </div>
+    </div>
+    <div class="fb-img">
+      <img src="https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Summer collection lookbook"/>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="new">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">Fresh Drops</p>
+      <h2 class="section-title">Most <em>Loved</em> Right Now</h2>
+    </div>
+    <div class="products-tabs">
+      <button class="tab-btn active" onclick="setTab(this)">All</button>
+      <button class="tab-btn" onclick="setTab(this)">New In</button>
+      <button class="tab-btn" onclick="setTab(this)">Dresses</button>
+      <button class="tab-btn" onclick="setTab(this)">Tops</button>
+      <button class="tab-btn" onclick="setTab(this)">Sale</button>
+    </div>
+    <div class="product-grid">
+      <!-- Card 1 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/3622608/pexels-photo-3622608.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Floral Mini Dress"/>
+          <span class="product-badge">New</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Originals</p>
+          <h3 class="product-name">Sundream Floral Mini Dress</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#FFB3C6" title="Blush Pink"></div>
+            <div class="color-swatch" style="background:#A8DADC" title="Sky Blue"></div>
+            <div class="color-swatch" style="background:#F5E642" title="Lemon"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$89.95</span></div>
+        </div>
+      </a>
+      <!-- Card 2 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Satin Slip Dress"/>
+          <span class="product-badge trending">Trending</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Studio</p>
+          <h3 class="product-name">Luxe Satin Slip Top</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#C084FC" title="Lilac"></div>
+            <div class="color-swatch" style="background:#1A1A2E" title="Black"></div>
+            <div class="color-swatch" style="background:#FFD6A5" title="Butter"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$65.00</span></div>
+        </div>
+      </a>
+      <!-- Card 3 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Linen Co-ord Set"/>
+          <span class="product-badge sale">Sale</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Essentials</p>
+          <h3 class="product-name">Golden Hour Linen Set</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#F5CBA7" title="Sand"></div>
+            <div class="color-swatch" style="background:#D5E8D4" title="Sage"></div>
+          </div>
+          <div class="product-price">
+            <span class="price-now">$79.95</span>
+            <span class="price-was">$119.00</span>
+          </div>
+        </div>
+      </a>
+      <!-- Card 4 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/5935738/pexels-photo-5935738.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Ruched Bodycon Dress"/>
+          <span class="product-badge">New</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Night</p>
+          <h3 class="product-name">Midnight Ruched Bodycon</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#FF6B6B" title="Coral"></div>
+            <div class="color-swatch" style="background:#1A1A2E" title="Midnight"></div>
+            <div class="color-swatch" style="background:#C084FC" title="Lilac"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$94.95</span></div>
+        </div>
+      </a>
+      <!-- Card 5 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Puff Sleeve Blouse"/>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Originals</p>
+          <h3 class="product-name">Cloud Puff Sleeve Blouse</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#FFFFFF;box-shadow:0 0 0 1.5px #ddd" title="White"></div>
+            <div class="color-swatch" style="background:#FAD0C4" title="Peach"></div>
+            <div class="color-swatch" style="background:#6EE7B7" title="Mint"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$72.00</span></div>
+        </div>
+      </a>
+      <!-- Card 6 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mini Crossbody Bag"/>
+          <span class="product-badge trending">Trending</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Accessories</p>
+          <h3 class="product-name">Aura Mini Crossbody</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#C084FC" title="Lilac"></div>
+            <div class="color-swatch" style="background:#FF6B6B" title="Coral"></div>
+            <div class="color-swatch" style="background:#F5CBA7" title="Tan"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$55.00</span></div>
+        </div>
+      </a>
+      <!-- Card 7 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Flowy Maxi Dress"/>
+          <span class="product-badge">New</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Summer</p>
+          <h3 class="product-name">Golden Maxi Sundress</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#F5E642" title="Lemon"></div>
+            <div class="color-swatch" style="background:#FFB3C6" title="Pink"></div>
+          </div>
+          <div class="product-price"><span class="price-now">$109.95</span></div>
+        </div>
+      </a>
+      <!-- Card 8 -->
+      <a href="#" class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/3622608/pexels-photo-3622608.jpeg?auto=compress&cs=tinysrgb&w=600&fit=crop&h=800" alt="Knit Cardigan"/>
+          <span class="product-badge sale">Sale</span>
+          <button class="product-wishlist" onclick="event.preventDefault();toggleWish(this)" aria-label="Wishlist">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wish-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="product-quick" onclick="event.preventDefault()">Quick Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">LUMI Knits</p>
+          <h3 class="product-name">Cinnamon Knit Cardigan</h3>
+          <div class="product-colors">
+            <div class="color-swatch" style="background:#C98E6E" title="Cinnamon"></div>
+            <div class="color-swatch" style="background:#D5E8D4" title="Sage"></div>
+            <div class="color-swatch" style="background:#F5CBA7" title="Cream"></div>
+          </div>
+          <div class="product-price">
+            <span class="price-now">$69.95</span>
+            <span class="price-was">$95.00</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="products-cta">
+      <a href="#" class="btn-primary" style="font-size:15px;padding:14px 36px">View All Products →</a>
+    </div>
+  </div>
+</section>
+
+<!-- LIFESTYLE / EDITORIAL -->
+<section class="lifestyle">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">The LUMI Journal</p>
+      <h2 class="section-title">Shop the <em>Look</em></h2>
+    </div>
+    <div class="ls-grid">
+      <div class="ls-main">
+        <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Featured editorial look"/>
+        <div class="ls-main-content">
+          <h3>The "No Rules" Summer Look</h3>
+          <p>Mix prints, stack jewellery, wear the dress. Our biggest style rule? There are none.</p>
+          <a href="#" class="btn-white">Read the Journal →</a>
+        </div>
+      </div>
+      <div class="ls-side">
+        <div class="ls-item">
+          <img src="https://images.pexels.com/photos/2220329/pexels-photo-2220329.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Going out look"/>
+          <div class="ls-item-overlay">
+            <h4>Going Out Edit</h4>
+            <span>12 looks for the weekend</span>
+          </div>
+        </div>
+        <div class="ls-item">
+          <img src="https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Day to night look"/>
+          <div class="ls-item-overlay">
+            <h4>Day-to-Night Dressing</h4>
+            <span>One dress, two ways</span>
+          </div>
+        </div>
+      </div>
+      <div class="ls-side">
+        <div class="ls-item">
+          <img src="https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Festival look"/>
+          <div class="ls-item-overlay">
+            <h4>Festival Season</h4>
+            <span>Stand out from the crowd</span>
+          </div>
+        </div>
+        <div class="ls-item">
+          <img src="https://images.pexels.com/photos/5935738/pexels-photo-5935738.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Travel looks"/>
+          <div class="ls-item-overlay">
+            <h4>Pack &amp; Go</h4>
+            <span>Travel-proof outfits</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-imgs">
+      <div class="about-img-main">
+        <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=800" alt="LUMI boutique"/>
+      </div>
+      <div class="about-img-accent">
+        <img src="https://images.pexels.com/photos/2220329/pexels-photo-2220329.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Fashion details"/>
+      </div>
+      <div class="about-stat">
+        <span class="about-stat-num">5+</span>
+        <span class="about-stat-label">Years dressing girls who slay</span>
+      </div>
+    </div>
+    <div class="about-content">
+      <p class="section-eyebrow">Our Story</p>
+      <h2>Built by a girl<br>who <em>got it</em>.</h2>
+      <p>LUMI started as a small pop-up in a Bondi garage and grew into the destination for young Australian women who want fashion that's actually fun — pieces that feel like them.</p>
+      <p>We source sustainable fabrics, work with small independent designers, and curate every drop with one question in mind: would we wear it out on a Saturday night?</p>
+      <div class="about-features">
+        <div class="about-feat">
+          <div class="af-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.75-3.75"/><path d="M22 2C11 2 2 11 2 22c5.5 0 10.5-2.5 14-6.5S22 7.5 22 2z"/></svg></div>
+          <div class="af-text">
+            <strong>Conscious Materials</strong>
+            <span>Natural &amp; recycled fibres</span>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="af-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--lilac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <div class="af-text">
+            <strong>Recycled Packaging</strong>
+            <span>Zero plastic promise</span>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="af-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          <div class="af-text">
+            <strong>Size Inclusive</strong>
+            <span>XS — 3XL always in stock</span>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="af-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div class="af-text">
+            <strong>Aussie Owned</strong>
+            <span>Independent &amp; proud of it</span>
+          </div>
+        </div>
+      </div>
+      <a href="#" class="btn-primary">Meet the Team →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram">
+  <div class="insta-inner">
+    <div class="insta-header">
+      <a href="#" class="insta-tag">
+        <div class="insta-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
+        @lumifashionau
+      </a>
+      <p style="color:var(--ink-soft);font-size:14px">Tag us to be featured · #LumiGirl</p>
+    </div>
+    <div class="insta-grid">
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/3622608/pexels-photo-3622608.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 842</div>
+      </div>
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 1.2k</div>
+      </div>
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/2220329/pexels-photo-2220329.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 967</div>
+      </div>
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/5935738/pexels-photo-5935738.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 2.1k</div>
+      </div>
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 764</div>
+      </div>
+      <div class="insta-item">
+        <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" alt="Instagram post"/>
+        <div class="insta-hover"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 1.8k</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">Customer Love</p>
+      <h2 class="section-title">The Reviews Are <em>In...</em></h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Ordered the Sundream Dress and it arrived in two days and looked even better in person. I've already worn it three times and gotten so many compliments. LUMI is my new fave."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--coral)">M</div>
+          <div>
+            <strong class="review-name">Mia T.</strong>
+            <span class="review-loc">Sydney, NSW</span>
+          </div>
+        </div>
+        <span class="review-quote">"</span>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Finally a brand that actually gets what young women want! The quality is amazing and the sizing is super consistent. I'm obsessed with the Lilac Satin Top — ordered two colours."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--lilac)">Z</div>
+          <div>
+            <strong class="review-name">Zara K.</strong>
+            <span class="review-loc">Melbourne, VIC</span>
+          </div>
+        </div>
+        <span class="review-quote">"</span>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The packaging is SO cute and the clothes feel really high quality for the price. Returned something once and it was genuinely hassle-free. Will be a customer forever."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--ink)">C</div>
+          <div>
+            <strong class="review-name">Chloe R.</strong>
+            <span class="review-loc">Brisbane, QLD</span>
+          </div>
+        </div>
+        <span class="review-quote">"</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section class="locations">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">Visit Us IRL</p>
+      <h2 class="section-title">Our <em>Boutiques</em></h2>
+      <p class="section-sub">Come try it on, meet the team, and pick up your next favourite thing in person.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc-card">
+        <div class="loc-img">
+          <img src="https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=900" alt="LUMI Bondi boutique"/>
+        </div>
+        <div class="loc-info">
+          <h3>LUMI Bondi</h3>
+          <p>12 Campbell Parade, Bondi Beach NSW 2026</p>
+          <dl class="loc-hours">
+            <dt>Opening Hours</dt>
+            <dd>Mon – Fri: 10am – 6pm</dd>
+            <dd>Sat – Sun: 9am – 5pm</dd>
+          </dl>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="#" class="btn-primary" style="font-size:13px;padding:10px 20px">Get Directions</a>
+            <a href="#" class="btn-outline" style="font-size:13px;padding:10px 20px">Learn More</a>
+          </div>
+        </div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-img">
+          <img src="https://images.pexels.com/photos/2467558/pexels-photo-2467558.jpeg?auto=compress&cs=tinysrgb&w=900" alt="LUMI Fitzroy boutique"/>
+        </div>
+        <div class="loc-info">
+          <h3>LUMI Fitzroy</h3>
+          <p>88 Smith Street, Fitzroy VIC 3065</p>
+          <dl class="loc-hours">
+            <dt>Opening Hours</dt>
+            <dd>Mon – Fri: 10am – 6pm</dd>
+            <dd>Sat: 9am – 5pm · Sun: 10am – 4pm</dd>
+          </dl>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="#" class="btn-primary" style="font-size:13px;padding:10px 20px">Get Directions</a>
+            <a href="#" class="btn-outline" style="font-size:13px;padding:10px 20px">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="nl-inner">
+    <h2>Get 10% Off Your First Order</h2>
+    <p>Join 12,000+ LUMI Girls and be first to know about new drops, exclusive sales, and style inspo straight to your inbox.</p>
+    <div class="nl-form">
+      <input type="email" class="nl-input" placeholder="your@email.com"/>
+      <button class="btn-white" style="flex-shrink:0">Subscribe →</button>
+    </div>
+    <p class="nl-note">No spam, ever. Unsubscribe anytime.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-mark"></div>
+        <div class="logo-text">LU<span style="color:var(--coral)">MI</span></div>
+      </a>
+      <p>Playful, feminine, unapologetically you. Fashion that actually feels like the girl wearing it.</p>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:16px">
+        1300 LUMI AU &nbsp;&nbsp; hello@lumifashion.com.au<br>
+        Mon – Fri: 9am – 5pm AEST
+      </div>
+      <div class="footer-social">
+        <a href="#" class="social-btn" title="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="#" class="social-btn" title="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.22 8.22 0 0 0 4.82 1.55V6.79a4.85 4.85 0 0 1-1.05-.1z"/></svg></a>
+        <a href="#" class="social-btn" title="Pinterest"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.16 9.44 7.63 11.21-.1-.95-.2-2.4.04-3.44.22-.93 1.47-6.23 1.47-6.23s-.37-.75-.37-1.86c0-1.75 1.01-3.06 2.27-3.06 1.07 0 1.59.8 1.59 1.77 0 1.08-.69 2.69-1.04 4.18-.3 1.25.62 2.27 1.84 2.27 2.21 0 3.69-2.83 3.69-6.18 0-2.55-1.72-4.34-4.18-4.34-2.85 0-4.52 2.14-4.52 4.35 0 .86.33 1.78.74 2.28a.3.3 0 0 1 .07.27c-.08.31-.25.99-.28 1.13-.04.18-.14.22-.32.13-1.24-.58-2.01-2.4-2.01-3.86 0-3.14 2.28-6.02 6.57-6.02 3.45 0 6.13 2.46 6.13 5.74 0 3.42-2.16 6.17-5.15 6.17-1.01 0-1.95-.52-2.27-1.14l-.62 2.3c-.22.86-.82 1.93-1.23 2.59.93.29 1.91.44 2.93.44 6.63 0 12-5.37 12-12S18.63 0 12 0z"/></svg></a>
+        <a href="#" class="social-btn" title="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Dresses</a></li>
+        <li><a href="#">Tops &amp; Tees</a></li>
+        <li><a href="#">Co-ords &amp; Sets</a></li>
+        <li><a href="#">Jackets</a></li>
+        <li><a href="#">Jewellery</a></li>
+        <li><a href="#">Bags &amp; Accessories</a></li>
+        <li><a href="#" style="color:var(--coral)!important">Sale</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Customer Service</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping &amp; Delivery</a></li>
+        <li><a href="#">Returns &amp; Exchanges</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Click &amp; Collect</a></li>
+        <li><a href="#">Gift Cards</a></li>
+        <li><a href="#">Afterpay Info</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>About LUMI</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press &amp; Media</a></li>
+        <li><a href="#">Boutique Bondi</a></li>
+        <li><a href="#">Boutique Fitzroy</a></li>
+        <li><a href="#">Style Journal</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 LUMI Fashion. All rights reserved. &nbsp;·&nbsp; Powered by Shopify &nbsp;·&nbsp; ABN 12 345 678 901</p>
+    <div class="payment-icons">
+      <span class="pay-badge">VISA</span>
+      <span class="pay-badge">MC</span>
+      <span class="pay-badge">AMEX</span>
+      <span class="pay-badge">PAYPAL</span>
+      <span class="pay-badge">AFTERPAY</span>
+      <span class="pay-badge">ZIP</span>
+      <span class="pay-badge">APPLE PAY</span>
+      <span class="pay-badge">G PAY</span>
+      <span class="pay-badge">SHOP PAY</span>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING CART -->
+<div class="floating-cart">
+  <button class="fc-btn" title="View cart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="popup" onclick="if(event.target===this)closePopup()">
+  <div class="popup" style="position:relative">
+    <div class="popup-img">
+      <img src="https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=600" alt="10% off your first order"/>
+    </div>
+    <div class="popup-content">
+      <p class="popup-eyebrow">Welcome to LUMI</p>
+      <h3>Get 10% Off Your First Order</h3>
+      <p>Drop your email below and we'll send the discount code straight to you. Plus, be first to see new drops.</p>
+      <input type="email" class="popup-input" placeholder="your@email.com"/>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="closePopup()">Unlock My 10% Off →</button>
+      <button class="popup-skip" onclick="closePopup()">No thanks, I'll pay full price</button>
+    </div>
+    <button class="popup-close" onclick="closePopup()">✕</button>
+  </div>
+</div>
+
+<script>
+  function toggleWish(btn) {
+    btn.classList.toggle('active');
+    const svg = btn.querySelector('.wish-icon');
+    if (btn.classList.contains('active')) {
+      svg.setAttribute('fill', 'var(--coral)');
+      svg.setAttribute('stroke', 'var(--coral)');
+    } else {
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+    }
+  }
+
+  // Show popup after 3s
+  setTimeout(() => document.getElementById('popup').classList.add('show'), 3000);
+  function closePopup() { document.getElementById('popup').classList.remove('show'); }
+
+  // Tab switching
+  function setTab(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Smooth scroll offset for sticky header
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      const id = this.getAttribute('href').slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+
+</body>
+</html>
